@@ -41,7 +41,7 @@ runs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         # role-to-assume: ${%- set string1 = "inputs.AWS_ROLE_TO_ASSUME_" %} {% set string2 = inputs.environment_name|upper %} {{ string1 + string2 }}
-        role-to-assume: inputs.AWS_ROLE_TO_ASSUME_ + ${{ inputs.environment_name.capitalize() }}
+        role-to-assume: inputs.AWS_ROLE_TO_ASSUME_ + ${{ inputs.environment_name | capitalize }}
         aws-region: us-west-2
         role-session-name: github-actions
         role-duration-seconds: 900
