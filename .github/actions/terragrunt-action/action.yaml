@@ -38,9 +38,9 @@ runs:
       uses: actions/checkout@main
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@master
+      uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets['AWS_ROLE_TO_ASSUME_' + inputs.environment_name | upper] }}
+        role-to-assume: ${{ inputs['AWS_ROLE_TO_ASSUME_' + inputs.environment_name | upper] }}
         aws-region: us-west-2
         role-session-name: github-actions
         role-duration-seconds: 900
