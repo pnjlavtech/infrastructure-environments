@@ -41,7 +41,7 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'dev'
-          working_dir: './dev/us-west-2'
+          working_dir: './environments/dev/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
 
       # Optional: Upload artifacts, logs, or state files
@@ -57,9 +57,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
-
-      - name: Wait for approval to promote to STG
-        uses: (A manual approval action or GitHub Environments approval)
 
       - name: Setup AWS Credentials for STG
         uses: aws-actions/configure-aws-credentials@v3
@@ -78,7 +75,7 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'stg'
-          working_dir: './stg/us-west-2'
+          working_dir: './environments/stg/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
 
   # Job for promoting to PROD
@@ -92,9 +89,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
-
-      - name: Wait for approval to promote to PROD
-        uses: (A manual approval action or GitHub Environments approval)
 
       - name: Setup AWS Credentials for PROD
         uses: aws-actions/configure-aws-credentials@v3
@@ -113,5 +107,5 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'prod'
-          working_dir: './prod/us-west-2'
+          working_dir: './environments/prod/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'

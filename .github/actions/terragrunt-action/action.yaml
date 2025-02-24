@@ -110,11 +110,11 @@ runs:
         output_format: cli,sarif
         output_file_path: console,results.sarif
 
-    - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: results.sarif
+    # - name: Upload SARIF file
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   if: always()
+    #   with:
+    #     sarif_file: results.sarif
 
     - name: Terragrunt Apply
       uses: gruntwork-io/terragrunt-action@v2.1.5
