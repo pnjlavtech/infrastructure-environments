@@ -13,6 +13,10 @@ env:
   TG_VERSION: '0.73.11'
   TF_VERSION: '1.9.2'
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+  AWS_ROLE_TO_ASSUME_DEV: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+  AWS_ROLE_TO_ASSUME_STG: ${{ secrets.AWS_ROLE_TO_ASSUME_STG }}
+  AWS_ROLE_TO_ASSUME_PROD: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
+
 
 jobs:
   # Job for planning and applying changes to DEV
@@ -24,13 +28,12 @@ jobs:
         uses: actions/checkout@master
 
       - name: Setup AWS Credentials for DEV
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME_DEV }}
           aws-region: us-west-2
           role-session-name: github-actions
           role-duration-seconds: 900
-          # aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_DEV }}
 
       - name: Run Terragrunt Plan and Apply for DEV
         uses: ./.github/actions/terragrunt-action
@@ -58,13 +61,12 @@ jobs:
         uses: actions/checkout@master
 
       - name: Setup AWS Credentials for STG
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_STG }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME_STG }}
           aws-region: us-west-2
           role-session-name: github-actions
           role-duration-seconds: 900
-          # aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_STG }}
 
       - name: Run Terragrunt Plan and Apply for STG
         uses: ./.github/actions/terragrunt-action
@@ -90,13 +92,12 @@ jobs:
         uses: actions/checkout@master
 
       - name: Setup AWS Credentials for PROD
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME_PROD }}
           aws-region: us-west-2
           role-session-name: github-actions
           role-duration-seconds: 900
-          # aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
 
       - name: Run Terragrunt Plan and Apply for PROD
         uses: ./.github/actions/terragrunt-action
