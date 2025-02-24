@@ -46,7 +46,6 @@ jobs:
           working_dir: './environments/dev/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
 
-      # Optional: Upload artifacts, logs, or state files
 
   # Job for promoting to STG
   promote_to_stg:
