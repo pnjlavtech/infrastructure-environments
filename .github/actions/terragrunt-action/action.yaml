@@ -2,9 +2,9 @@ name: "Terragrunt Action"
 description: "Runs Terragrunt commands with TFLint and Checkov scans"
 
 inputs:
-  aws_account_id:
-    description: "AWS Account ID"
-    required: true
+  # aws_account_id:
+  #   description: "AWS Account ID"
+  #   required: true
   environment_name:
     description: "Target environment (dev, stg, prod)"
     required: true
@@ -44,7 +44,7 @@ runs:
         aws-region: us-west-2
         role-session-name: github-actions
         role-duration-seconds: 900
-        aws-account-id: ${{ secrets['AWS_ACCOUNT_ID_' + inputs.environment_name | upper] }}
+        # aws-account-id: ${{ secrets['AWS_ACCOUNT_ID_' + inputs.environment_name | upper] }}
 
     - name: Create Terraform Plugin Cache Dir
       run: mkdir -p ${{ inputs.tf_plugin_cache_dir }}
