@@ -1,0 +1,117 @@
+name: 'Terragrunt CI/CD Pipeline'
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write # Required for OIDC authentication
+  # Adjust permissions as needed
+
+env:
+  GH_PAT: ${{ secrets.GH_PAT }}
+  TG_VERSION: '0.73.11'
+  TF_VERSION: '1.9.2'
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+
+jobs:
+  # Job for planning and applying changes to DEV
+  deploy_dev:
+    name: 'Deploy to DEV'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Setup AWS Credentials for DEV
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          aws-region: us-west-2
+          role-session-name: github-actions
+          role-duration-seconds: 900
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_DEV }}
+
+      - name: Run Terragrunt Plan and Apply for DEV
+        uses: ./.github/actions/terragrunt-action
+        with:
+          gh_pat: ${{ env.GH_PAT }}
+          tf_plugin_cache_dir: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          tf_version: ${{ env.TF_VERSION }}
+          tg_version: ${{ env.TG_VERSION }}
+          environment_name: 'dev'
+          working_dir: './dev/us-west-2'
+        #   tg_command: 'run-all apply -auto-approve'
+
+      # Optional: Upload artifacts, logs, or state files
+
+  # Job for promoting to STG
+  promote_to_stg:
+    name: 'Promote to STG'
+    needs: deploy_dev
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment:
+      name: stg
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Wait for approval to promote to STG
+        uses: (A manual approval action or GitHub Environments approval)
+
+      - name: Setup AWS Credentials for STG
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_STG }}
+          aws-region: us-west-2
+          role-session-name: github-actions
+          role-duration-seconds: 900
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_STG }}
+
+      - name: Run Terragrunt Plan and Apply for STG
+        uses: ./.github/actions/terragrunt-action
+        with:
+          gh_pat: ${{ env.GH_PAT }}
+          tf_plugin_cache_dir: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          tf_version: ${{ env.TF_VERSION }}
+          tg_version: ${{ env.TG_VERSION }}
+          environment_name: 'stg'
+          working_dir: './stg/us-west-2'
+        #   tg_command: 'run-all apply -auto-approve'
+
+  # Job for promoting to PROD
+  promote_to_prod:
+    name: 'Promote to PROD'
+    needs: promote_to_stg
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment:
+      name: prod
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Wait for approval to promote to PROD
+        uses: (A manual approval action or GitHub Environments approval)
+
+      - name: Setup AWS Credentials for PROD
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
+          aws-region: us-west-2
+          role-session-name: github-actions
+          role-duration-seconds: 900
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
+
+      - name: Run Terragrunt Plan and Apply for PROD
+        uses: ./.github/actions/terragrunt-action
+        with:
+          gh_pat: ${{ env.GH_PAT }}
+          tf_plugin_cache_dir: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          tf_version: ${{ env.TF_VERSION }}
+          tg_version: ${{ env.TG_VERSION }}
+          environment_name: 'prod'
+          working_dir: './prod/us-west-2'
+        #   tg_command: 'run-all apply -auto-approve'

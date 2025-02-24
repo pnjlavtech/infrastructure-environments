@@ -1,0 +1,125 @@
+name: "Terragrunt Action"
+description: "Runs Terragrunt commands with TFLint and Checkov scans"
+
+inputs:
+  aws_account_id:
+    description: "AWS Account ID"
+    required: true
+  environment_name:
+    description: "Target environment (dev, stg, prod)"
+    required: true
+  gh_pat:
+    description: "GitHub Personal Access Token"
+    required: true
+  tg_version:
+    description: "Terragrunt version"
+    default: '0.73.11'
+    required: true
+  tf_version:
+    description: "Terraform version"
+    default: '1.9.2'
+    required: true
+  tf_plugin_cache_dir:
+    description: "Terraform plugin cache directory"
+    default: "${{ github.workspace }}/.terraform.d/plugin-cache"
+    required: true
+  working_dir:
+    description: "Working directory for Terragrunt commands"
+    required: true
+  # tg_command:
+  #   description: "Terragrunt command to run"
+  #   default: "run-all plan"
+  #   required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repo
+      uses: actions/checkout@main
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        role-to-assume: ${{ secrets['AWS_ROLE_TO_ASSUME_' + inputs.environment_name | upper] }}
+        aws-region: us-west-2
+        role-session-name: github-actions
+        role-duration-seconds: 900
+        aws-account-id: ${{ secrets['AWS_ACCOUNT_ID_' + inputs.environment_name | upper] }}
+
+    - name: Create Terraform Plugin Cache Dir
+      run: mkdir -p ${{ inputs.tf_plugin_cache_dir }}
+      shell: bash
+
+    - name: Terraform Plugin Cache
+      uses: actions/cache@v4.0.1
+      with:
+        path: ${{ inputs.tf_plugin_cache_dir }}
+        key: ${{ runner.os }}-terraform-plugin-cache-${{ hashFiles('**/.terraform.lock.hcl') }}
+
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v4
+      with:
+        tflint_version: v0.55.1
+
+    - name: Show TFLint Version
+      run: tflint --version
+      shell: bash
+
+    - name: Init TFLint
+      run: |
+        cd ${{ inputs.working_dir }}
+        tflint --init
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.gh_pat }}
+
+    - name: Run TFLint
+      run: |
+        cd ${{ inputs.working_dir }}
+        tflint --config=./.tflint.hcl -f json
+      shell: bash
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3.1.2
+      with:
+        # terraform_version: ${{ inputs.tf_version }}
+        terraform_wrapper: true
+
+    - name: Terraform Version
+      run: |
+        terragrunt --version
+      shell: bash
+
+    - name: Terraform wrapper path
+      run: which terraform
+      shell: bash
+
+    - name: Terragrunt Plan
+      uses: gruntwork-io/terragrunt-action@v2.1.5
+      with:
+        tf_version: ${{ inputs.tf_version }}
+        tg_version: ${{ inputs.tg_version }}
+        tg_dir: ${{ inputs.working_dir }}
+        tg_command: 'run-all plan'
+
+    - name: Run Checkov Scan
+      uses: bridgecrewio/checkov-action@v12
+      with:
+        # Adjust paths as needed
+        directory: ${{ inputs.working_dir }}
+        output_format: cli,sarif
+        output_file_path: console,results.sarif
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: results.sarif
+
+    - name: Terragrunt Apply
+      uses: gruntwork-io/terragrunt-action@v2.1.5
+      with:
+        tf_version: ${{ inputs.tf_version }}
+        tg_version: ${{ inputs.tg_version }}
+        tg_dir: ${{ inputs.working_dir }}
+        tg_command: 'run-all apply'
