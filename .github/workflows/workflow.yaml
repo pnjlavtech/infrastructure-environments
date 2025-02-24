@@ -31,7 +31,7 @@ jobs:
           aws-region: us-west-2
           role-session-name: github-actions
           role-duration-seconds: 900
-          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_DEV }}
+          # aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_DEV }}
 
       - name: Run Terragrunt Plan and Apply for DEV
         uses: ./.github/actions/terragrunt-action
@@ -65,7 +65,7 @@ jobs:
           aws-region: us-west-2
           role-session-name: github-actions
           role-duration-seconds: 900
-          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_STG }}
+          # aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_STG }}
 
       - name: Run Terragrunt Plan and Apply for STG
         uses: ./.github/actions/terragrunt-action
@@ -97,7 +97,7 @@ jobs:
           aws-region: us-west-2
           role-session-name: github-actions
           role-duration-seconds: 900
-          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
+          # aws_account_id: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
 
       - name: Run Terragrunt Plan and Apply for PROD
         uses: ./.github/actions/terragrunt-action
