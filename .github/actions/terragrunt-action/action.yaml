@@ -2,9 +2,9 @@ name: "Terragrunt Action"
 description: "Runs Terragrunt commands with TFLint and Checkov scans"
 
 inputs:
-  # aws_account_id:
-  #   description: "AWS Account ID"
-  #   required: true
+  aws_account_id:
+    description: "AWS Account ID"
+    required: true
   environment_name:
     description: "Target environment (dev, stg, prod)"
     required: true
@@ -46,6 +46,7 @@ runs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
+        # role-to-assume: arn:aws:iam::${{ inputs.AWS_ACCOUNT_ID }}:role/${{ inputs.environment_name }}-${{ inputs.aws-region }}-iam-role-github-actions-deploy
         role-to-assume: ${{ inputs.role_to_assume }}
         aws-region: us-west-2
         role-session-name: github-actions
@@ -56,7 +57,7 @@ runs:
       shell: bash
 
     - name: Terraform Plugin Cache
-      uses: actions/cache@v4.0.1
+      uses: actions/cache@v4
       with:
         path: ${{ inputs.tf_plugin_cache_dir }}
         key: ${{ runner.os }}-terraform-plugin-cache-${{ hashFiles('**/.terraform.lock.hcl') }}

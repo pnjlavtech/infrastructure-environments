@@ -5,21 +5,24 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {
-  # Automatically load account-level variables
-  account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl"))
+  # Automatically load environment-level variables
+  global_vars = read_terragrunt_config(find_in_parent_folders("global.hcl"))
 
   # Automatically load environment-level variables
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
+
+  # Automatically load account-level variables
+  account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Automatically load region-level variables
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
 
   # Extract the variables we need for easy access
   account_name = local.account_vars.locals.account_name
-  company      = local.environment_vars.locals.company
+  company      = local.global_vars.locals.company
   environment  = local.environment_vars.locals.environment
   region       = local.region_vars.locals.region
-  region_code  = local.region_vars.locals.region_code
+  region_code  = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
 }
 
 # Generate an AWS provider block
@@ -31,17 +34,18 @@ provider "aws" {
   region = "${local.region}"
 
   # Only these AWS Account IDs may be operated on by this template
-  allowed_account_ids = ["${get_env("AWS_ACCOUNT_ID", "")}"]
+  allowed_account_ids = ["${get_env("aws_account_id", "")}"]
 }
 EOF
 }
+
 
 # Configure Terragrunt to automatically store tfstate files in an S3 bucket
 remote_state {
   backend = "s3"
   config = {
     encrypt        = true
-    bucket         = "${local.company}-${local.environment}-${local.region_code}-tfstate-s3-${get_env("AWS_ACCOUNT_ID")}"
+    bucket         = "${local.company}-${local.environment}-${local.region_code}-tfstate-s3-${get_env("aws_account_id")}"
     key            = "${path_relative_to_include()}/tf.tfstate"
     region         = local.region
     dynamodb_table = "tf-locks"
@@ -66,7 +70,8 @@ remote_state {
 # Configure root level variables that all resources can inherit. This is especially helpful with multi-account configs
 # where terraform_remote_state data sources are placed directly into the modules.
 inputs = merge(
+  local.global_vars.locals,
+  local.environment_vars.locals,
   local.account_vars.locals,
   local.region_vars.locals,
-  local.environment_vars.locals,
 )

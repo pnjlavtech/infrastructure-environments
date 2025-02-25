@@ -16,6 +16,9 @@ env:
   AWS_ROLE_TO_ASSUME_DEV: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
   AWS_ROLE_TO_ASSUME_STG: ${{ secrets.AWS_ROLE_TO_ASSUME_STG }}
   AWS_ROLE_TO_ASSUME_PROD: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
+  AWS_ACCOUNT_ID_DEV: ${{ secrets.AWS_ACCOUNT_ID_DEV }}
+  AWS_ACCOUNT_ID_STG: ${{ secrets.AWS_ACCOUNT_ID_STG }}
+  AWS_ACCOUNT_ID_PROD: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
 
 
 jobs:
@@ -43,13 +46,10 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'dev'
-          # env_name_upper: 'DEV'
           role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_DEV }}
           working_dir: './environments/dev/us-west-2'
-        #   tg_command: 'run-all apply -auto-approve'
+          aws_account_id: ${{ env.AWS_ACCOUNT_ID_DEV }}
 
-
-  # Job for promoting to STG
   promote_to_stg:
     name: 'Promote to STG'
     needs: deploy_dev
@@ -77,10 +77,10 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'stg'
-          # env_name_upper: 'STG'
           role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_STG }}
           working_dir: './environments/stg/us-west-2'
-        #   tg_command: 'run-all apply -auto-approve'
+          aws_account_id: ${{ env.AWS_ACCOUNT_ID_STG }}
+          #   tg_command: 'run-all apply -auto-approve'
 
   # Job for promoting to PROD
   promote_to_prod:
@@ -110,7 +110,7 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'prod'
-          # env_name_upper: 'PROD'
           role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_PROD }}
           working_dir: './environments/prod/us-west-2'
+          aws_account_id: ${{ env.AWS_ACCOUNT_ID_PROD }}
         #   tg_command: 'run-all apply -auto-approve'
