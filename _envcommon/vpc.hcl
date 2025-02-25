@@ -13,7 +13,7 @@ locals {
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
 
   # Extract the variables we need for easy access
-  cidr       = local.environment_vars.locals.cidr
+  cidr       = local.region_vars.locals.cidr
   eks_clus   = local.region_vars.locals.eks_clus  # blue or green
   eks_name   = local.environment_vars.locals.eks_name  # eks 
   eks_fname  = "${local.eks_name}-${local.eks_clus}-${local.region}-${local.env}" # "eks-blue-us-west-2-dev"
