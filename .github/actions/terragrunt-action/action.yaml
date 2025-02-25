@@ -90,7 +90,7 @@ runs:
 
     - name: Terraform Version
       run: |
-        terragrunt --version
+        terraform --version
       shell: bash
 
     - name: Terraform wrapper path
