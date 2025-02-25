@@ -8,8 +8,11 @@ inputs:
   environment_name:
     description: "Target environment (dev, stg, prod)"
     required: true
-  env_name_upper:
-    description: "Target environment in UPPER CASE (DEV, STG, PROD)"
+  # env_name_upper:
+  #   description: "Target environment in UPPER CASE (DEV, STG, PROD)"
+  #   required: true
+  role_to_assume:
+    description: "Role to assume"
     required: true
   gh_pat:
     description: "GitHub Personal Access Token"
@@ -43,7 +46,7 @@ runs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ format('inputs.AWS_ROLE_TO_ASSUME_{}', inputs.env_name_upper }}
+        role-to-assume: ${{ inputs.role_to_assume }}
         aws-region: us-west-2
         role-session-name: github-actions
         role-duration-seconds: 900

@@ -43,7 +43,8 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'dev'
-          env_name_upper: 'DEV'
+          # env_name_upper: 'DEV'
+          role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_DEV }}
           working_dir: './environments/dev/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
 
@@ -76,7 +77,8 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'stg'
-          env_name_upper: 'STG'
+          # env_name_upper: 'STG'
+          role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_STG }}
           working_dir: './environments/stg/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
 
@@ -108,6 +110,7 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'prod'
-          env_name_upper: 'PROD'
+          # env_name_upper: 'PROD'
+          role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_PROD }}
           working_dir: './environments/prod/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
