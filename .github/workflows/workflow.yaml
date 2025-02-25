@@ -43,6 +43,7 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'dev'
+          env_name_upper: 'DEV'
           working_dir: './environments/dev/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
 
@@ -75,6 +76,7 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'stg'
+          env_name_upper: 'STG'
           working_dir: './environments/stg/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
 
@@ -106,5 +108,6 @@ jobs:
           tf_version: ${{ env.TF_VERSION }}
           tg_version: ${{ env.TG_VERSION }}
           environment_name: 'prod'
+          env_name_upper: 'PROD'
           working_dir: './environments/prod/us-west-2'
         #   tg_command: 'run-all apply -auto-approve'
