@@ -6,34 +6,37 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {
+  # Automatically load global-level variables
+  global_vars = read_terragrunt_config(find_in_parent_folders("global.hcl"))
+
   # Automatically load environment-level variables
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 
   # Automatically load region-level variables
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
 
-  # Extract the variables we need for easy access
-  cidr       = local.region_vars.locals.cidr
-  eks_clus   = local.region_vars.locals.eks_clus  # blue or green
-  eks_name   = local.environment_vars.locals.eks_name  # eks 
-  eks_fname  = "${local.eks_name}-${local.eks_clus}-${local.region}-${local.env}" # "eks-blue-us-west-2-dev"
-  env        = local.environment_vars.locals.environment # dev 
-  region     = local.region_vars.locals.region # us-west-2
-  // gh_token   = get_env("GH_PAT")
-  vpc_cidr   = local.cidr
+  # Extract the variables needed 
+  cidr        = local.region_vars.locals.cidr
+  company     = local.global_vars.locals.company
+  common_tags = local.global_vars.locals.common_tags
+  eks_clus    = local.region_vars.locals.eks_clus  # blue or green
+  eks_name    = local.global_vars.locals.eks_name  # eks 
+  env         = local.environment_vars.locals.environment # dev
+  region      = local.region_vars.locals.region # us-west-2
+  region_code = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
+  vpc_cidr    = local.cidr
 
-  tags = {
-    created-date     = "2025-02-09"
-    created-by       = "jay"
-    env              = local.env
-    region           = local.region
-    github-repo      = "tf-aws-modules"
-    tf-module        = "vpc"
-  }
+  env_reg     = "${local.env}-${local.region_code}" # "dev-usw2"
+  eks_fname   = "${local.env_reg}-" # "dev-usw2-eks-blue"
 
-  # Expose the base source URL so different versions of the module can be deployed in different environments. 
-  # This will be used to construct the source URL in the child terragrunt configurations.
-  // base_source_url = "git::https://github.com/pnjlavtech/terragrunt-infrastructure-modules.git//modules/vpc"
+  tags = merge(local.common_tags, {
+    Environment = local.env
+    Region      = local.region_code
+    Module      = "vpc"
+  })
+
+  # Expose the base source URL so different versions of the module can be deployed in different environment-regions. 
+  # This is used to construct the source URL in the child terragrunt configurations.
   base_source_url = "git::https://github.com/pnjlavtech/tf-aws-modules.git//vpc"
   // this would be needed if the repo was private
   // base_source_url = "git::https://jazzlyj:${gh_token}@github.com/pnjlavtech/terragrunt-infrastructure-modules.git//modules/vpc"
@@ -59,41 +62,38 @@ locals {
 
 }
 
-
-
-
 # ---------------------------------------------------------------------------------------------------------------------
 # MODULE PARAMETERS
-# These are the variables we have to pass in to use the module. 
+# These are the variables that have to pass in to use the module. 
 # This defines the parameters that are common across all environments.
 # ---------------------------------------------------------------------------------------------------------------------
 inputs = {
-  cidr                                            = local.cidr
-  intra_subnets                                   = local.intra_subnets
-  name                                            = "${local.env}-vpc"
-  private_subnets                                 = local.private_subnets
-  public_subnets                                  = local.public_subnets
+  cidr            = local.cidr
+  intra_subnets   = local.intra_subnets
+  name            = "${local.env_reg}-vpc"
+  private_subnets = local.private_subnets
+  public_subnets  = local.public_subnets
   intra_subnet_tags = {
-    env                   = "${local.env}"
-    fullname              = "${local.env}-${local.region}-vpc-subnet-intra" 
-    module-component      = "subnet"
-    module-component-type = "subnet-intra"
+    Environment         = "${local.env}"
+    Fullname            = "${local.env_reg}-vpc-subnet-intra" 
+    ModuleComponent     = "subnet"
+    ModuleComponentType = "subnet-intra"
   }
   private_subnet_tags = {
-    env                               = "${local.env}"
-    fullname                          = "${local.env}-${local.region}-vpc-subnet-private" 
-    module-component                  = "subnet"
-    module-component-type             = "subnet-private"
+    Environment                       = "${local.env}"
+    Fullname                          = "${local.env_reg}-vpc-subnet-private" 
+    ModuleComponent                   = "subnet"
+    ModuleComponentType               = "subnet-private"
     "karpenter.sh/discovery"          = "${local.eks_fname}"
     "kubernetes.io/role/internal-elb" = 1
   }
   public_subnet_tags = {
-    env                                        = "${local.env}"
-    fullname                                   = "${local.env}-${local.region}-vpc-subnet-public" 
+    Environment              = "${local.env}"
+    Fullname                 = "${local.env_reg}-vpc-subnet-public" 
     // "kubernetes.io/cluster/${local.eks_fname}" = "shared"
-    "kubernetes.io/role/elb"                   = 1
-    module-component                           = "subnet"
-    module-component-type                      = "subnet-public"
+    "kubernetes.io/role/elb" = 1
+    ModuleComponent          = "subnet"
+    ModuleComponentType      = "subnet-public"
   }
 
 }

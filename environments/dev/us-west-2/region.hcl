@@ -2,7 +2,7 @@
 # configure the remote state bucket and pass forward to the child modules as inputs.
 locals {
   region        = "us-west-2"
-  region_code   = "uw2" 
+  # region_code   = "uw2" 
   cidr          = "10.100.0.0/16"
   eks_clus      = "blue"
 }
