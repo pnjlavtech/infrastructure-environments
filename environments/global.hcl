@@ -1,6 +1,7 @@
 locals {
   applied_by   = "jayl"
-  applied_date = formatdate("YYYY-MM-DD_HH:MM:SS", timestamp())
+  # applied_date = formatdate("YYYY-MM-DD_HH:MM:SS", timestamp())
+  applied_date = "2025-02-25"
   company      = "pnjlavtech"
   eks_name     = "eks"
   managed_by   = "terraform"

@@ -21,15 +21,18 @@ locals {
   common_tags = local.global_vars.locals.common_tags
   eks_clus    = local.region_vars.locals.eks_clus  # blue or green
   eks_name    = local.global_vars.locals.eks_name  # eks 
-  eks_fname   = "${local.eks_name}-${local.eks_clus}-${local.region}-${local.env}" # "eks-blue-us-west-2-dev"
   env         = local.environment_vars.locals.environment # dev
   region      = local.region_vars.locals.region # us-west-2
+  region_code = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
   vpc_cidr    = local.cidr
 
+  env_reg     = "${local.env}-${local.region_code}" # "dev-usw2"
+  eks_fname   = "${local.env_reg}-" # "dev-usw2-eks-blue"
+
   tags = merge(local.common_tags, {
-    Env      = local.env
-    Region   = local.region
-    TfModule = "vpc"
+    Environment = local.env
+    Region      = local.region_code
+    Module      = "vpc"
   })
 
   # Expose the base source URL so different versions of the module can be deployed in different environment-regions. 
@@ -59,41 +62,38 @@ locals {
 
 }
 
-
-
-
 # ---------------------------------------------------------------------------------------------------------------------
 # MODULE PARAMETERS
 # These are the variables that have to pass in to use the module. 
 # This defines the parameters that are common across all environments.
 # ---------------------------------------------------------------------------------------------------------------------
 inputs = {
-  cidr                                            = local.cidr
-  intra_subnets                                   = local.intra_subnets
-  name                                            = "${local.env}-${local.region}-vpc"
-  private_subnets                                 = local.private_subnets
-  public_subnets                                  = local.public_subnets
+  cidr            = local.cidr
+  intra_subnets   = local.intra_subnets
+  name            = "${local.env_reg}-vpc"
+  private_subnets = local.private_subnets
+  public_subnets  = local.public_subnets
   intra_subnet_tags = {
-    env                   = "${local.env}"
-    fullname              = "${local.env}-${local.region}-vpc-subnet-intra" 
-    module-component      = "subnet"
-    module-component-type = "subnet-intra"
+    Environment         = "${local.env}"
+    Fullname            = "${local.env_reg}-vpc-subnet-intra" 
+    ModuleComponent     = "subnet"
+    ModuleComponentType = "subnet-intra"
   }
   private_subnet_tags = {
-    env                               = "${local.env}"
-    fullname                          = "${local.env}-${local.region}-vpc-subnet-private" 
-    module-component                  = "subnet"
-    module-component-type             = "subnet-private"
+    Environment                       = "${local.env}"
+    Fullname                          = "${local.env_reg}-vpc-subnet-private" 
+    ModuleComponent                   = "subnet"
+    ModuleComponentType               = "subnet-private"
     "karpenter.sh/discovery"          = "${local.eks_fname}"
     "kubernetes.io/role/internal-elb" = 1
   }
   public_subnet_tags = {
-    env                                        = "${local.env}"
-    fullname                                   = "${local.env}-${local.region}-vpc-subnet-public" 
+    Environment              = "${local.env}"
+    Fullname                 = "${local.env_reg}-vpc-subnet-public" 
     // "kubernetes.io/cluster/${local.eks_fname}" = "shared"
-    "kubernetes.io/role/elb"                   = 1
-    module-component                           = "subnet"
-    module-component-type                      = "subnet-public"
+    "kubernetes.io/role/elb" = 1
+    ModuleComponent          = "subnet"
+    ModuleComponentType      = "subnet-public"
   }
 
 }
