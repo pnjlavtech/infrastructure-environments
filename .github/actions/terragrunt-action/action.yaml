@@ -72,7 +72,6 @@ runs:
 
     - name: Init TFLint
       run: |
-        cd ${{ inputs.working_dir }}
         tflint --init
       shell: bash
       env:
@@ -80,8 +79,7 @@ runs:
 
     - name: Run TFLint
       run: |
-        cd ${{ inputs.working_dir }}
-        tflint --config=./.tflint.hcl -f json
+        tflint -f json
       shell: bash
 
     - name: Setup Terraform
