@@ -24,7 +24,7 @@ locals {
   region_code = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
 
   env_reg     = "${local.env}-${local.region_code}" # "dev-usw2"
-  eks_fname   = "${local.env_reg}-" # "dev-usw2-eks-blue"
+  eks_fname   = "${local.env_reg}-eks-${local.eks_clus}" # "dev-usw2-eks-blue"
 
   tags = merge(local.common_tags, {
     Environment = local.env
