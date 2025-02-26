@@ -2,9 +2,9 @@ name: "Terragrunt Action"
 description: "Runs Terragrunt commands with TFLint and Checkov scans"
 
 inputs:
-  aws_account_id:
-    description: "AWS Account ID"
-    required: true
+  # aws_account_id:
+  #   description: "AWS Account ID"
+  #   required: true
   environment_name:
     description: "Target environment (dev, stg, prod)"
     required: true
