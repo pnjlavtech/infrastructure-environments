@@ -16,7 +16,6 @@ locals {
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
 
   # Extract the variables needed 
-  cidr        = local.region_vars.locals.cidr
   company     = local.global_vars.locals.company
   common_tags = local.global_vars.locals.common_tags
   eks_clus    = local.region_vars.locals.eks_clus  # blue or green
@@ -24,7 +23,7 @@ locals {
   env         = local.environment_vars.locals.environment # dev
   region      = local.region_vars.locals.region # us-west-2
   region_code = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
-  vpc_cidr    = local.cidr
+  vpc_cidr    = local.region_vars.locals.cidr
 
   env_reg     = "${local.env}-${local.region_code}" # "dev-usw2"
   eks_fname   = "${local.env_reg}-" # "dev-usw2-eks-blue"
@@ -68,7 +67,7 @@ locals {
 # This defines the parameters that are common across all environments.
 # ---------------------------------------------------------------------------------------------------------------------
 inputs = {
-  cidr            = local.cidr
+  vpc_cidr        = local.cidr
   intra_subnets   = local.intra_subnets
   name            = "${local.env_reg}-vpc"
   private_subnets = local.private_subnets
