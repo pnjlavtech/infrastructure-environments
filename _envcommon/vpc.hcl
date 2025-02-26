@@ -67,7 +67,7 @@ locals {
 # This defines the parameters that are common across all environments.
 # ---------------------------------------------------------------------------------------------------------------------
 inputs = {
-  vpc_cidr        = local.cidr
+  vpc_cidr        = local.vpc_cidr
   intra_subnets   = local.intra_subnets
   name            = "${local.env_reg}-vpc"
   private_subnets = local.private_subnets
