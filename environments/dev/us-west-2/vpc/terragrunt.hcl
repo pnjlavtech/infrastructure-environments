@@ -31,6 +31,6 @@ terraform {
 
 inputs = {
   tags = merge(include.envcommon.locals.tags, 
-    {"ModuleTag" = "v0.1.3--vpc"}
+    {"TfModuleTag" = "v0.1.3--vpc"}
   )
 }
