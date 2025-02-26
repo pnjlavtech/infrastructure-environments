@@ -34,7 +34,7 @@ provider "aws" {
   region = "${local.region}"
 
   # Only these AWS Account IDs may be operated on by this template
-  allowed_account_ids = ["${get_env("aws_account_id", "")}"]
+  allowed_account_ids = ["${get_aws_account_id()}"]
 }
 EOF
 }
@@ -45,7 +45,7 @@ remote_state {
   backend = "s3"
   config = {
     encrypt        = true
-    bucket         = "${local.company}-${local.environment}-${local.region_code}-tfstate-s3-${get_env("aws_account_id")}"
+    bucket         = "${local.company}-${local.environment}-${local.region_code}-tfstate-s3-${get_aws_account_id()}"
     key            = "${path_relative_to_include()}/tf.tfstate"
     region         = local.region
     dynamodb_table = "tf-locks"
