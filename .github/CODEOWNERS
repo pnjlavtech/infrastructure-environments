@@ -1,0 +1,7 @@
+# Codeowners file that specifies the default code owner for this repository.
+# For more information on the syntax and behavior, visit:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Specify default code owner for everything in the repository.
+* @jazzlyj
+

@@ -16,10 +16,11 @@ env:
   AWS_ROLE_TO_ASSUME_DEV: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
   AWS_ROLE_TO_ASSUME_STG: ${{ secrets.AWS_ROLE_TO_ASSUME_STG }}
   AWS_ROLE_TO_ASSUME_PROD: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
+  AWS_ACCOUNT_ID_MGMT: ${{ secrets.AWS_ACCOUNT_ID_MGMT }}
+
   # AWS_ACCOUNT_ID_DEV: ${{ secrets.AWS_ACCOUNT_ID_DEV }}
   # AWS_ACCOUNT_ID_STG: ${{ secrets.AWS_ACCOUNT_ID_STG }}
   # AWS_ACCOUNT_ID_PROD: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
-
 
 jobs:
   # Job for planning and applying changes to DEV
@@ -48,7 +49,7 @@ jobs:
           environment_name: 'dev'
           role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_DEV }}
           working_dir: './environments/dev/us-west-2'
-          # aws_account_id: ${{ env.AWS_ACCOUNT_ID_DEV }}
+          aws_account_id_mgmt: ${{ env.AWS_ACCOUNT_ID_MGMT }}
 
   promote_to_stg:
     name: 'Promote to STG'
@@ -79,8 +80,7 @@ jobs:
           environment_name: 'stg'
           role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_STG }}
           working_dir: './environments/stg/us-west-2'
-          # aws_account_id: ${{ env.AWS_ACCOUNT_ID_STG }}
-          #   tg_command: 'run-all apply -auto-approve'
+          aws_account_id_mgmt: ${{ env.AWS_ACCOUNT_ID_MGMT }}
 
   # Job for promoting to PROD
   promote_to_prod:
@@ -112,5 +112,7 @@ jobs:
           environment_name: 'prod'
           role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_PROD }}
           working_dir: './environments/prod/us-west-2'
+          aws_account_id_mgmt: ${{ env.AWS_ACCOUNT_ID_MGMT }}
+
           # aws_account_id: ${{ env.AWS_ACCOUNT_ID_PROD }}
         #   tg_command: 'run-all apply -auto-approve'

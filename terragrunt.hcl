@@ -32,12 +32,32 @@ generate "provider" {
   contents  = <<EOF
 provider "aws" {
   region = "${local.region}"
+  alias  = "${local.environment}" 
 
   # Only these AWS Account IDs may be operated on by this template
-  allowed_account_ids = ["${get_aws_account_id()}"]
+  allowed_account_ids = ["${get_aws_account_id()}", "${get_env("AWS_ACCOUNT_ID_MGMT")}"]
+}
+
+provider "aws" {
+  region = "${local.region}"
+  alias  = "aws.management" 
+
+  assume_role {
+    role_arn = "arn:aws:iam::${get_env("AWS_ACCOUNT_ID_MGMT")}:role/${local.environment}-cross-acct-management-role"
+    session_name = "${local.environment}-assume-cross-acct-tf-session"
+  }
+  # Only these AWS Account IDs may be operated on by this template
+  allowed_account_ids = ["${get_aws_account_id()}", "${get_env("AWS_ACCOUNT_ID_MGMT")}"]
+
 }
 EOF
 }
+
+# Removed from generate provider for now as it may block cross account access 
+# and I dont want set up a bunch of code right now to add in the management account 
+  ## Only these AWS Account IDs may be operated on by this template
+  # allowed_account_ids = ["${get_aws_account_id()}"]
+
 
 
 # Configure Terragrunt to automatically store tfstate files in an S3 bucket

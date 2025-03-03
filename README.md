@@ -58,26 +58,15 @@ terraform workspace new prod
 ```
 
 
-#### For Each Environment
-a. Set WORKING_ENV envvar
+#### For Each Environment (Account)
+
+a. Setup the shell env for that AWS account environment
 ```bash
-export WORKING_ENV=dev
-# or 
-export WORKING_ENV=stg
-export WORKING_ENV=prod
+source setup_env.sh dev
+# or stg, prod, management   
 ```
 
-b. Set AWS profile
-```bash
-export AWS_PROFILE=$WORKING_ENV
-```
-
-c. Switch TF workspace
-```bash
-terraform workspace select $WORKING_ENV
-```
-
-d. Create DynamoDB Table
+b. Create DynamoDB Table
 ```bash
 
 aws dynamodb create-table \
@@ -87,7 +76,7 @@ aws dynamodb create-table \
    --billing-mode PAY_PER_REQUEST
 ```
  
-e. Create s3 buckets
+c. Create s3 bucket
 ```bash
 cd ../tf-aws-modules/s3
 tfi
@@ -96,28 +85,42 @@ tfaa
 ```
 
 
-f. Repeat steps a. through e. for each $WORKING_ENV
+d. Repeat steps a. through c. for each environment (account)
 
 
 
-### **1. Implement OIDC provider and IAM role for deployment used by CICD pipeline**
-a. create oidc provider
+### **1. Implement OIDC provider, IAM Deployment Roles, and Setup Cross Account Acess for the Deployment Roles**
+[See cross account docs here](./docs/CROSS_ACCOUNT.md)
+
+#### In each of the environment accounts:
+
+a. Create OIDC provider
+
+b. Create IAM deployment roles 
+
+#### In the management acccount:
+c. Create the management role allowing cross account acesss for each of the environment IAM deployment roles
 
 
-b. create iam deployment role
+#### Back In each of the environment accounts:
+d. Update/add assume role permissions to the IAM deployment roles 
 
+NOTE: If this is not done, then tokens need to be created and a bunch of values and vars in SCM (github or gitlab), pipelines built with that, then changed later. Seemingly inefficient.
 
-
-If 3 is not done, then tokens need to be created and a bunch of values and vars in SCM (github or gitlab), pipelines built with that, then changed later. Seemingly inefficient.
 
 
 
 ### **2. Implement CICD pipeline using OIDC provider IAM deployment role**
-* add ENV vars for each of the iam deploy role arn value
-* create 3 environments in the github repo
+Setup Github Actions:
+* Add ENV vars for each of the iam deploy role arn value
+* Add branch protection (on main branch to require a PR and approvers at minimum) 
+* Create 3 environments (dev, stg, prod) in the infrastructure-environment repo.
+* Add approvers in the stg and prod environment. this is used to force the GHA actions deployment workflow to pause and await approvers before the next stg in the pipeline can run (deploy to stg, and then again for deploy to prod) 
+ 
   
 
- 
+
+
 
 ### **3. Deploy infra**
 * Profit!!!

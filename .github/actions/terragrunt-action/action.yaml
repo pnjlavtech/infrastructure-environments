@@ -1,10 +1,10 @@
 name: "Terragrunt Action"
-description: "Runs Terragrunt commands with TFLint and Checkov scans"
+description: "Runs Terragrunt commands"
 
 inputs:
-  # aws_account_id:
-  #   description: "AWS Account ID"
-  #   required: true
+  aws_account_id_mgmt:
+    description: "AWS Account Management Account ID"
+    required: true
   environment_name:
     description: "Target environment (dev, stg, prod)"
     required: true
@@ -84,7 +84,7 @@ runs:
       shell: bash
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3.1.2
+      uses: hashicorp/setup-terraform@v3
       with:
         # terraform_version: ${{ inputs.tf_version }}
         terraform_wrapper: true
@@ -99,7 +99,7 @@ runs:
       shell: bash
 
     - name: Terragrunt Plan
-      uses: gruntwork-io/terragrunt-action@v2.1.5
+      uses: gruntwork-io/terragrunt-action@v2
       with:
         tf_version: ${{ inputs.tf_version }}
         tg_version: ${{ inputs.tg_version }}
