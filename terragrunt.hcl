@@ -25,22 +25,20 @@ locals {
   region_code  = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
 }
 
-# Generate an AWS provider block
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "aws" {
   region = "${local.region}"
-  alias  = "${local.environment}" 
-
+  
   # Only these AWS Account IDs may be operated on by this template
   allowed_account_ids = ["${get_aws_account_id()}", "${get_env("AWS_ACCOUNT_ID_MGMT")}"]
 }
 
 provider "aws" {
   region = "${local.region}"
-  alias  = "aws.management" 
+  alias  = "management" 
 
   assume_role {
     role_arn = "arn:aws:iam::${get_env("AWS_ACCOUNT_ID_MGMT")}:role/${local.environment}-cross-acct-management-role"
