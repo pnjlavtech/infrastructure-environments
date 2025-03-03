@@ -32,7 +32,6 @@ generate "provider" {
   contents  = <<EOF
 provider "aws" {
   region = "${local.region}"
-  alias  = "${local.environment}" 
 
   # Only these AWS Account IDs may be operated on by this template
   allowed_account_ids = ["${get_aws_account_id()}", "${get_env("AWS_ACCOUNT_ID_MGMT")}"]
