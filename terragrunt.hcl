@@ -31,7 +31,7 @@ generate "provider" {
   contents  = <<EOF
 provider "aws" {
   region = "${local.region}"
-
+  
   # Only these AWS Account IDs may be operated on by this template
   allowed_account_ids = ["${get_aws_account_id()}", "${get_env("AWS_ACCOUNT_ID_MGMT")}"]
 }
@@ -53,8 +53,7 @@ EOF
 
 # Removed from generate provider for now as it may block cross account access 
 # and I dont want set up a bunch of code right now to add in the management account 
-  ## Only these AWS Account IDs may be operated on by this template# Generate an AWS provider block
-
+  ## Only these AWS Account IDs may be operated on by this template
   # allowed_account_ids = ["${get_aws_account_id()}"]
 
 
