@@ -1,0 +1,115 @@
+name: "Pre-Merge Checks for Terraform & Commits"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  # (Other minimal permissions as needed)
+
+jobs:
+  tf_checks:
+    name: "Terraform Format, Lint, and Validate"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@main
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.9.2'
+
+      - name: Terraform Format Check
+        # Assuming your local convention is that "terraform fmt -check" is your 'tformat'
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: 'v0.55.1'
+
+      - name: Run TFLint
+        run: tflint -f json
+
+  commit_message_check:
+    name: "Conventional Commit Message Check"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Commitizen and Commitlint
+        run: |
+          npm install -g commitizen @commitlint/cli @commitlint/config-conventional
+          cat <<EOF > commitlint.config.js
+          module.exports = {
+            extends: ['@commitlint/config-conventional'],
+          };
+          EOF
+
+      - name: Validate Commit Messages
+        run: |
+          # Get commit messages from HEAD compared to main
+          echo "Checking commit messages on PR..."
+          git fetch origin main
+          COMMIT_MESSAGES=$(git log origin/main..HEAD --pretty=format:"%s")
+          echo "$COMMIT_MESSAGES" > commit-messages.txt
+          # Check commit messages with commitlint; adjust the range if necessary.
+          commitlint --from=origin/main --verbose
+
+  versioning:
+    name: "Bump Version, Create Tag & Generate Changelog"
+    needs: [tf_checks, commit_message_check]
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.bump.outputs.new_version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Commitizen Tools and Standard Version
+        run: npm install -g commitizen standard-version
+
+      - name: Bump Version with Commitizen
+        id: bump
+        run: |
+          # Use commitizen to bump the version according to conventional commits.
+          # The --yes flag avoids interactive prompts.
+          cz bump --yes
+          # Capture the latest tag as the new version.
+          NEW_VERSION=$(git describe --tags --abbrev=0)
+          echo "New version is ${NEW_VERSION}"
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Generate Changelog Message
+        id: changelog
+        run: |
+          # Use standard-version in dry-run mode to generate changelog output.
+          CHANGELOG=$(npx conventional-changelog -p angular --infile=CHANGELOG.md --lerna-package your-tf-module --skip-commit)
+          echo "Generated changelog:"
+          echo "${CHANGELOG}"
+          # Set the changelog as an output. (Using $GITHUB_OUTPUT as recommended)
+          echo "changelog=${CHANGELOG}" >> $GITHUB_OUTPUT
+
+      - name: Tag Repository with New Version
+        run: |
+          NEW_VERSION=${{ steps.bump.outputs.new_version }}
+          git tag $NEW_VERSION
+          git push origin $NEW_VERSION
