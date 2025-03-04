@@ -2,7 +2,6 @@
 # feed forward to the child modules.
 locals {
   environment   = "dev" 
-  public_domain = "dev.pnjlavtech.com"
 }
 
 # 25 networks in between allows 25 regions

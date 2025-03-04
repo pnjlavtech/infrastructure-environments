@@ -20,7 +20,7 @@ locals {
   eks_clus      = local.region_vars.locals.eks_clus # blue or green 
   eks_name      = local.global_vars.locals.eks_name # eks
   env           = local.environment_vars.locals.environment # dev
-  public_domain = local.environment_vars.locals.public_domain # pnjlavtech.com
+  public_domain = local.global_vars.locals.public_domain # pnjlavtech.com
   region        = local.region_vars.locals.region
   region_code   = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
   vpc_cidr      = local.region_vars.locals.cidr
