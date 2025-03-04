@@ -1,13 +1,14 @@
 locals {
-  applied_by   = "jayl"
+  applied_by    = "jayl"
   # applied_date = formatdate("YYYY-MM-DD_HH:MM:SS", timestamp())
-  applied_date = "2025-02-25"
-  company      = "pnjlavtech"
-  eks_name     = "eks"
-  managed_by   = "terraform"
-  module_repo  = "tf-aws-modules"
-  owner        = "devops"
-  region_codes = {
+  applied_date  = "2025-02-25"
+  company       = "pnjlavtech"
+  eks_name      = "eks"
+  managed_by    = "terraform"
+  module_repo   = "tf-aws-modules"
+  owner         = "devops"
+  public_domain = "pnjlavtech.com"
+  region_codes  = {
     "us-east-1"      = "use1"
     "us-west-2"      = "usw2"
     "eu-west-1"      = "euw1"
