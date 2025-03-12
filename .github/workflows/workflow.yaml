@@ -36,7 +36,7 @@ jobs:
         with:
           role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME_DEV }}
           aws-region: us-west-2
-          role-session-name: github-actions
+          role-session-name: github-actions-dev
           role-duration-seconds: 900
 
       - name: Run Terragrunt Plan and Apply for DEV
@@ -65,9 +65,10 @@ jobs:
       - name: Setup AWS Credentials for STG
         uses: aws-actions/configure-aws-credentials@v4
         with:
+          unset-current-credentials: true
           role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME_STG }}
           aws-region: us-west-2
-          role-session-name: github-actions
+          role-session-name: github-actions-stg
           role-duration-seconds: 900
 
       - name: Run Terragrunt Plan and Apply for STG
@@ -97,9 +98,10 @@ jobs:
       - name: Setup AWS Credentials for PROD
         uses: aws-actions/configure-aws-credentials@v4
         with:
+          unset-current-credentials: true
           role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME_PROD }}
           aws-region: us-west-2
-          role-session-name: github-actions
+          role-session-name: github-actions-prod
           role-duration-seconds: 900
 
       - name: Run Terragrunt Plan and Apply for PROD
