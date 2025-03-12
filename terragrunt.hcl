@@ -58,8 +58,6 @@ EOF
   ## Only these AWS Account IDs may be operated on by this template
   # allowed_account_ids = ["${get_aws_account_id()}"]
 
-
-
 # Configure Terragrunt to automatically store tfstate files in an S3 bucket
 remote_state {
   backend = "s3"
@@ -76,10 +74,7 @@ remote_state {
   }
 }
 
-
 // The linting and SCA checks by tflint and checkov are done in the ghactions workflow and are not needed here
-
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # GLOBAL PARAMETERS
