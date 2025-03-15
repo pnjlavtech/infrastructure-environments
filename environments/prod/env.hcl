@@ -2,8 +2,6 @@
 # feed forward to the child modules.
 locals {
   environment   = "prod"
-  eks_name      = "eks" 
-  public_domain = "pnjlavtech.com"
 }
 
 

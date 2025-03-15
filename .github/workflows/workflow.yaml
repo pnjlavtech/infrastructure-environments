@@ -23,7 +23,6 @@ env:
   # AWS_ACCOUNT_ID_PROD: ${{ secrets.AWS_ACCOUNT_ID_PROD }}
 
 jobs:
-  # Job for planning and applying changes to DEV
   deploy_dev:
     name: 'Deploy to DEV'
     runs-on: ubuntu-latest
@@ -83,7 +82,6 @@ jobs:
           working_dir: './environments/stg/us-west-2'
           aws_account_id_mgmt: ${{ env.AWS_ACCOUNT_ID_MGMT }}
 
-  # Job for promoting to PROD
   promote_to_prod:
     name: 'Promote to PROD'
     needs: promote_to_stg

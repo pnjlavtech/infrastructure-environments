@@ -3,6 +3,7 @@
 locals {
   aws_region = "us-west-2"
   cidr       = "10.150.0.0/16"
+  eks_clus   = "blue"
 }
 
 # 25 networks in between allows 25 regions

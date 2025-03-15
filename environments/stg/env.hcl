@@ -2,7 +2,5 @@
 # feed forward to the child modules.
 locals {
   environment   = "stg"
-  eks_name      = "eks" 
-  public_domain = "stg.pnjlavtech.com"
 }
 
