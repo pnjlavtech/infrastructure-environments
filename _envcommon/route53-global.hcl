@@ -17,6 +17,7 @@ locals {
 
   # Extract out common variables for reuse
   common_tags   = local.global_vars.locals.common_tags
+  company       = local.global_vars.locals.company
   domain_name   = local.global_vars.locals.domain_name # pnjlavtech.com
   eks_clus      = local.region_vars.locals.eks_clus # blue or green 
   eks_name      = local.global_vars.locals.eks_name # eks
@@ -61,9 +62,13 @@ dependency "vpc" {
 
 
 inputs = {
+  company                       = local.company
   create_in_non_prod_account    = true
+  domain_name                   = local.domain_name
   env                           = local.env
   mgmt_acct_id                  = "${get_env("AWS_ACCOUNT_ID_MGMT")}"
   non_prod_create_in_mgmnt_acct = true
+  purpose                       = "route53-zone-public-env-region"
+  region_code                   = local.region_code
   # aws_account_id                = "${get_aws_account_id()}"
 }
