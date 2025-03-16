@@ -49,7 +49,6 @@ runs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        # role-to-assume: arn:aws:iam::${{ inputs.AWS_ACCOUNT_ID }}:role/${{ inputs.environment_name }}-${{ inputs.aws-region }}-iam-role-github-actions-deploy
         unset-current-credentials: true
         role-to-assume: ${{ inputs.role_to_assume }}
         aws-region: us-west-2
@@ -65,12 +64,6 @@ runs:
       with:
         path: ${{ inputs.tf_plugin_cache_dir }}
         key: ${{ runner.os }}-terraform-plugin-cache-${{ hashFiles('**/.terraform.lock.hcl') }}
-
-    # - name: Terraform Provider Cache
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: "${{ github.workspace }}/.terraform/providers"
-    #     key: ${{ runner.os }}-terraform-provider-${{ hashFiles('**/.terraform.lock.hcl') }}
 
     - name: Setup TFLint
       uses: terraform-linters/setup-tflint@v4
@@ -96,7 +89,6 @@ runs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        # terraform_version: ${{ inputs.tf_version }}
         terraform_wrapper: true
 
     - name: Terraform Version

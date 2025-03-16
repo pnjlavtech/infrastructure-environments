@@ -21,6 +21,7 @@ locals {
   eks_clus    = local.region_vars.locals.eks_clus  # blue or green
   eks_name    = local.global_vars.locals.eks_name  # eks 
   env         = local.environment_vars.locals.environment # dev
+  module_ver  = local.region_vars.locals.vpc_mod_ver #  Eg "v1.0.6--vpc"
   region      = local.region_vars.locals.region # us-west-2
   region_code = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
   vpc_cidr    = local.region_vars.locals.cidr
@@ -32,6 +33,7 @@ locals {
     Environment = local.env
     Region      = local.region_code
     Module      = "vpc"
+    ModuleTag   = local.module_ver
   })
 
   # Expose the base source URL so different versions of the module can be deployed in different environment-regions. 

@@ -3,11 +3,11 @@ locals {
   # applied_date = formatdate("YYYY-MM-DD_HH:MM:SS", timestamp())
   applied_date  = "2025-03-15"
   company       = "pnjlavtech"
+  domain_name   = "pnjlavtech.com"
   eks_name      = "eks"
   managed_by    = "terraform"
   module_repo   = "tf-aws-modules"
   owner         = "devops"
-  public_domain = "pnjlavtech.com"
   region_codes  = {
     "us-east-1"      = "use1"
     "us-west-2"      = "usw2"

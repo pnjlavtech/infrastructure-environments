@@ -113,6 +113,3 @@ jobs:
           role_to_assume: ${{ env.AWS_ROLE_TO_ASSUME_PROD }}
           working_dir: './environments/prod/us-west-2'
           aws_account_id_mgmt: ${{ env.AWS_ACCOUNT_ID_MGMT }}
-
-          # aws_account_id: ${{ env.AWS_ACCOUNT_ID_PROD }}
-        #   tg_command: 'run-all apply -auto-approve'

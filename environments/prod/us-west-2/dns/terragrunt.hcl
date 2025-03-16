@@ -18,29 +18,9 @@ include "envcommon" {
   expose = true
 }
 
-# Configure the version of the module to use in this environment. This allows you to promote new versions one
-# environment at a time (e.g., qa -> stage -> prod).
+# Configure the version of the module to use in this environment-region. 
+# Version set in the region.hcl allows most granular control of module version used in a env-reg.
+# This allows promotion of new versions one environment-region at a time (e.g., dev-usw2 -> stg-usw2 -> prod-usw2).
 terraform {
-  source = "${include.envcommon.locals.base_source_url}?ref=v1.0.6--route53-global"
-}
-
-dependency "vpc" {
-  config_path = "../vpc"
-  // skip_outputs = true
-  mock_outputs = {
-    vpc_id          = "	vpc-08f7169617628dd22"
-  }
-  // mock_outputs_allowed_terraform_commands = ["plan"]
-}
-
-
-inputs = {
-  create_in_non_prod_account    = true
-  non_prod_create_in_mgmnt_acct = true
-  # aws_account_id                = "${get_aws_account_id()}"
-  mgmt_acct_id                  = "${get_env("AWS_ACCOUNT_ID_MGMT")}"
-
-  tags = merge(include.envcommon.locals.tags, 
-    {"TfModuleTag" = "v1.0.6--route53-global"}
-  )
+  source = "${include.envcommon.locals.base_source_url}?ref=v${include.envcommon.locals.module_ver}"
 }
