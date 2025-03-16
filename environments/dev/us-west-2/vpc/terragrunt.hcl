@@ -21,16 +21,10 @@ include "envcommon" {
 # Configure the version of the module to use in this environment. 
 # This allows promotion of new versions one environment-region at a time (e.g., dev-usw2 -> stg-usw2 -> prod-usw2).
 terraform {
-  source = "${include.envcommon.locals.base_source_url}?ref=v0.1.3--vpc"
+  source = "${include.envcommon.locals.base_source_url}?ref=v${include.envcommon.locals.module_ver}"
 }
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # To override any of the common parameters for this environment, specify any inputs.
 # ---------------------------------------------------------------------------------------------------------------------
-
-inputs = {
-  tags = merge(include.envcommon.locals.tags, 
-    {"TfModuleTag" = "v0.1.3--vpc"}
-  )
-}

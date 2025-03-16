@@ -5,6 +5,10 @@ locals {
   # region_code   = "uw2" 
   cidr          = "10.100.0.0/16"
   eks_clus      = "blue"
+
+  vpc_mod_ver            = "0.1.3--vpc"
+  route53_global_mod_ver = "1.0.7--route53-global" 
+
 }
 
 
