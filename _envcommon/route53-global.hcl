@@ -52,7 +52,7 @@ locals {
 # ---------------------------------------------------------------------------------------------------------------------
 
 dependency "vpc" {
-  config_path = "../vpc"
+  config_path = "./environments/${local.env}/${local.region}/vpc"
   // skip_outputs = true
   mock_outputs = {
     vpc_id          = "	vpc-08f7169617628dd22"

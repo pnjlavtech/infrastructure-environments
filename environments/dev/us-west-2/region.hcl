@@ -1,10 +1,9 @@
 # Set common variables for the region. This is automatically pulled in in the root terragrunt.hcl configuration to
 # configure the remote state bucket and pass forward to the child modules as inputs.
 locals {
-  region        = "us-west-2"
-  # region_code   = "uw2" 
-  cidr          = "10.100.0.0/16"
-  eks_clus      = "blue"
+  region   = "us-west-2"
+  cidr     = "10.100.0.0/16"
+  eks_clus = "blue"
 
   vpc_mod_ver            = "0.1.3--vpc"
   route53_global_mod_ver = "1.0.7--route53-global" 

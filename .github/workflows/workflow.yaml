@@ -12,7 +12,7 @@ env:
   GH_PAT: ${{ secrets.GH_PAT }}
   TG_VERSION: '0.73.11'
   TF_VERSION: '1.9.2'
-  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache-new
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
   AWS_ROLE_TO_ASSUME_DEV: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
   AWS_ROLE_TO_ASSUME_STG: ${{ secrets.AWS_ROLE_TO_ASSUME_STG }}
   AWS_ROLE_TO_ASSUME_PROD: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
