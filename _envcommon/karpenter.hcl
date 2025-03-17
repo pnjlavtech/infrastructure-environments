@@ -20,6 +20,7 @@ locals {
   eks_clus    = local.region_vars.locals.eks_clus
   eks_name    = local.global_vars.locals.eks_name
   env         = local.environment_vars.locals.environment
+  module_ver  = local.region_vars.locals.karpenter_mod_ver #  Eg "v1.0.6--karpenter"
   region      = local.region_vars.locals.region
   region_code = lookup(local.global_vars.locals.region_codes, local.region, "usw2")
 
@@ -28,9 +29,10 @@ locals {
 
   tags = merge(local.common_tags, {
     Environment = local.env
-    Region      = local.region_code
+    RegionCode  = local.region_code
     Clustername = local.eks_fname
     Module      = "karpenter"
+    ModuleTag   = local.module_ver
   })
 
 
@@ -45,3 +47,11 @@ locals {
 # These are the variables we have to pass in to use the module. This defines the parameters that are common across all
 # environments.
 # ---------------------------------------------------------------------------------------------------------------------
+
+inputs = {
+  chart_version                      = "1.1.1"
+  cluster_certificate_authority_data = dependency.eks.outputs.cluster_certificate_authority_data
+  cluster_endpoint                   = dependency.eks.outputs.cluster_endpoint
+  cluster_name                       = dependency.eks.outputs.cluster_name
+  # env                                = local.env
+}

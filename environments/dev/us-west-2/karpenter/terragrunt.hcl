@@ -18,11 +18,13 @@ include "envcommon" {
   expose = true
 }
 
-# Configure the version of the module to use in this environment. This allows you to promote new versions one
-# environment at a time (e.g., qa -> stage -> prod).
+# Configure the version of the module to use in this environment-region. 
+# Version set in the region.hcl allows most granular control of module version used in a env-reg.
+# This allows promotion of new versions one environment-region at a time (e.g., dev-usw2 -> stg-usw2 -> prod-usw2).
 terraform {
-  source = "${include.envcommon.locals.base_source_url}?ref=v1.0.0--karpenter"
+  source = "${include.envcommon.locals.base_source_url}?ref=v${include.envcommon.locals.module_ver}"
 }
+
 
 dependency "eks" {
   config_path = "../eks"
@@ -35,13 +37,3 @@ dependency "eks" {
 }
 
 
-inputs = {
-  cluster_certificate_authority_data = dependency.eks.outputs.cluster_certificate_authority_data
-  cluster_endpoint                   = dependency.eks.outputs.cluster_endpoint
-  cluster_name                       = dependency.eks.outputs.cluster_name
-  # chart_version                      = "0.37.7"
-  chart_version                      = "1.1.1"
-  tags                               = merge(include.envcommon.locals.tags, 
-    {"TfModuleTag" = "v1.0.0--karpenter"}
-  )
-}

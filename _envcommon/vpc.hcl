@@ -31,7 +31,7 @@ locals {
 
   tags = merge(local.common_tags, {
     Environment = local.env
-    Region      = local.region_code
+    RegionCode  = local.region_code
     Module      = "vpc"
     ModuleTag   = local.module_ver
   })

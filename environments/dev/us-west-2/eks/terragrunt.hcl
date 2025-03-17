@@ -18,11 +18,13 @@ include "envcommon" {
   expose = true
 }
 
-# Configure the version of the module to use in this environment. This allows you to promote new versions one
-# environment at a time (e.g., qa -> stage -> prod).
+# Configure the version of the module to use in this environment-region. 
+# Version set in the region.hcl allows most granular control of module version used in a env-reg.
+# This allows promotion of new versions one environment-region at a time (e.g., dev-usw2 -> stg-usw2 -> prod-usw2).
 terraform {
-  source = "${include.envcommon.locals.base_source_url}?ref=v1.0.0--eks"
+  source = "${include.envcommon.locals.base_source_url}?ref=v${include.envcommon.locals.module_ver}"
 }
+
 
 dependency "vpc" {
   config_path = "../vpc"
@@ -44,12 +46,3 @@ dependency "vpc" {
 }
 
 
-inputs = {
-  eks_cluster_version = "1.3.1"
-  vpc_id              = dependency.vpc.outputs.vpc_id
-  intra_subnets       = dependency.vpc.outputs.intra_subnets
-  private_subnets     = dependency.vpc.outputs.private_subnets
-  tags                = merge(include.envcommon.locals.tags, 
-    {"TfModuleTag" = "v1.0.0--eks"}
-  )
-}

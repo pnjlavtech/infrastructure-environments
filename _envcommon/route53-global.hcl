@@ -32,7 +32,7 @@ locals {
 
   tags = merge(local.common_tags, {
     Environment = local.env
-    Region      = local.region_code
+    RegionCode  = local.region_code
     Module      = "route53-global"
     ModuleTag   = local.module_ver
   })
@@ -53,13 +53,13 @@ locals {
 
 
 inputs = {
-  company                       = local.company
+  # company                       = local.company
   create_in_non_prod_account    = true
-  domain_name                   = local.domain_name
-  env                           = local.env
+  # domain_name                   = local.domain_name
+  # env                           = local.env
   mgmt_acct_id                  = "${get_env("AWS_ACCOUNT_ID_MGMT")}"
   non_prod_create_in_mgmnt_acct = true
   purpose                       = "route53-zone-public-env-region"
-  region_code                   = local.region_code
+  # region_code                   = local.region_code
   # aws_account_id                = "${get_aws_account_id()}"
 }
