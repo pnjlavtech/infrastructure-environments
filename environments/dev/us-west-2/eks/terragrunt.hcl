@@ -26,23 +26,3 @@ terraform {
 }
 
 
-dependency "vpc" {
-  config_path = "../vpc"
-  // skip_outputs = true
-  mock_outputs = {
-    vpc_id          = "	vpc-08f7169617628dd22"
-    intra_subnets = [
-             "subnet-0048819e19ca630b5", 
-             "subnet-0d40e9b3d7602d3bb", 
-             "subnet-08c154f3a5adccd99" 
-    ]
-    private_subnets = [
-             "subnet-0037719e19ca630b5", 
-             "subnet-0c40e9b3d7602d3aa", 
-             "subnet-07c154f3a5adccd00" 
-    ]
-  }
-  // mock_outputs_allowed_terraform_commands = ["plan"]
-}
-
-
