@@ -81,12 +81,13 @@ dependency "route53-global" {
 
 
 inputs = {
-  domain_name         = local.domain_name
+  domain_name         = "${local.region_code}.${local.env}.${local.domain_name}"
   eks_cluster_version = "1.3.1"
   eks_fname           = local.eks_fname
   env                 = local.env
   intra_subnets       = dependency.vpc.outputs.intra_subnets
   private_subnets     = dependency.vpc.outputs.private_subnets
+  # reg_env_domain_name = "${local.region_code}.${local.env}.${local.domain_name}"
   vpc_id              = dependency.vpc.outputs.vpc_id
   zone_id             = dependency.route53-global.outputs.aws_route53_zone_id
 }
