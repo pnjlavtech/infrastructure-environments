@@ -25,12 +25,3 @@ terraform {
   source = "${include.envcommon.locals.base_source_url}?ref=v${include.envcommon.locals.module_ver}"
 }
 
-
-dependency "vpc" {
-  config_path = "../vpc"
-  // skip_outputs = true
-  mock_outputs = {
-    vpc_id          = "	vpc-08f7169617628dd22"
-  }
-  // mock_outputs_allowed_terraform_commands = ["plan"]
-}

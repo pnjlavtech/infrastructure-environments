@@ -45,21 +45,31 @@ locals {
 
 
 
+
 # ---------------------------------------------------------------------------------------------------------------------
 # MODULE PARAMETERS
 # These are the variables we have to pass in to use the module. This defines the parameters that are common across all
 # environments.
 # ---------------------------------------------------------------------------------------------------------------------
 
+dependency "vpc" {
+  config_path = "${dirname(find_in_parent_folders())}/environments/${local.env}/${local.region}/vpc"
+  // skip_outputs = true
+  mock_outputs = {
+    vpc_id          = "	vpc-08f7169617628dd22"
+  }
+  // mock_outputs_allowed_terraform_commands = ["plan"]
+}
+
 
 inputs = {
   # company                       = local.company
   create_in_non_prod_account    = true
-  # domain_name                   = local.domain_name
-  # env                           = local.env
+  domain_name                   = local.domain_name
+  env                           = local.env
   mgmt_acct_id                  = "${get_env("AWS_ACCOUNT_ID_MGMT")}"
   non_prod_create_in_mgmnt_acct = true
   purpose                       = "route53-zone-public-env-region"
-  # region_code                   = local.region_code
+  region_code                   = local.region_code
   # aws_account_id                = "${get_aws_account_id()}"
 }
