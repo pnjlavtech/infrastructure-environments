@@ -6,7 +6,7 @@ locals {
   eks_clus = "blue"
 
   vpc_mod_ver            = "0.1.3--vpc"
-  route53_global_mod_ver = "2.0.1--route53-global" 
+  route53_global_mod_ver = "2.0.2--route53-global" 
   eks_mod_ver            = "1.0.5--eks" 
   karpenter_mod_ver      = "1.0.0--karpenter" 
 }
@@ -16,3 +16,4 @@ locals {
 # cidr = "10.100.0.0/16"   # dev
 # cidr = "10.125.0.0/16"   # stg   
 # cidr = "10.150.0.0/16"   # prod
+

@@ -87,6 +87,6 @@ inputs = {
   env                   = local.env
   intra_subnets         = dependency.vpc.outputs.intra_subnets
   private_subnets       = dependency.vpc.outputs.private_subnets
-  route53_zone_zone_arn = dependency.route53-global.outputs.route53_zone_zone_arn
+  route53_zone_zone_arn = dependency.route53-global.outputs.route53_zone_zone_arn["${local.region}.${local.env}.${local.domain_name}"]
   vpc_id                = dependency.vpc.outputs.vpc_id
 }
