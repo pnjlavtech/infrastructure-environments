@@ -74,9 +74,15 @@ dependency "vpc" {
 dependency "route53-global" {
   config_path = "${dirname(find_in_parent_folders())}/environments/${local.env}/${local.region}/route53-global"
   mock_outputs = {
-    route53_zone_zone_arn = "asdfasdf39391"
+    route53_zone_zone_arn = {
+      "usw2-int.dev.pnjlavtech.com" = "arn:aws:route53:::hostedzone/ABCDEFG1234"
+      "usw2.dev.pnjlavtech.com"     = "arn:aws:route53:::hostedzone/HIJKLMN5678"
+    }
   }
+
 }
+
+
 
 
 
