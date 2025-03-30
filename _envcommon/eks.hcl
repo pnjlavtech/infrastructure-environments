@@ -90,4 +90,3 @@ inputs = {
   route53_zone_zone_arn = dependency.route53-global.outputs.route53_zone_zone_arn.this["${local.region}.${local.env}.${local.domain_name}"]
   vpc_id                = dependency.vpc.outputs.vpc_id
 }
-route53_zone_zone_arn
