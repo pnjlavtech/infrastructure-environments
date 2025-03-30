@@ -1,7 +1,7 @@
 locals {
   applied_by    = "jayl"
   # applied_date = formatdate("YYYY-MM-DD_HH:MM:SS", timestamp())
-  applied_date  = "2025-03-15"
+  applied_date  = "2025-03-30"
   company       = "pnjlavtech"
   domain_name   = "pnjlavtech.com"
   eks_name      = "eks"

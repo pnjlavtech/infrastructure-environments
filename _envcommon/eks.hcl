@@ -74,7 +74,7 @@ dependency "vpc" {
 dependency "route53-global" {
   config_path = "${dirname(find_in_parent_folders())}/environments/${local.env}/${local.region}/route53-global"
   mock_outputs = {
-    aws_route53_zone_id = "asdfasdf39391"
+    route53_zone_arn = "asdfasdf39391"
   }
 }
 
@@ -88,6 +88,7 @@ inputs = {
   intra_subnets       = dependency.vpc.outputs.intra_subnets
   private_subnets     = dependency.vpc.outputs.private_subnets
   # reg_env_domain_name = "${local.region_code}.${local.env}.${local.domain_name}"
+  route53_zone_arn    = dependency.route53-global.outputs.aws_route53_zone_arn
   vpc_id              = dependency.vpc.outputs.vpc_id
-  zone_id             = dependency.route53-global.outputs.aws_route53_zone_id
+  # zone_id             = dependency.route53-global.outputs.aws_route53_zone_id
 }

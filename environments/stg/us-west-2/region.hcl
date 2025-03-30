@@ -7,7 +7,7 @@ locals {
 
   vpc_mod_ver            = "0.1.3--vpc"
   route53_global_mod_ver = "1.0.8--route53-global"
-  eks_mod_ver            = "1.0.2--eks" 
+  eks_mod_ver            = "1.0.3--eks" 
   karpenter_mod_ver      = "1.0.0--karpenter" 
 
 }
