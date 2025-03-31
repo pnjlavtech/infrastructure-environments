@@ -29,6 +29,9 @@ locals {
   env_reg     = "${local.env}-${local.region_code}" # "dev-usw2"
   eks_fname   = "${local.env_reg}-eks-${local.eks_clus}" # "dev-usw2-eks-blue"
 
+  route53_zone_zone_arn_keyint = "${local.region_code}-int.${local.env}.${local.domain_name}"
+  route53_zone_zone_arn_keypub = "${local.region_code}.${local.env}.${local.domain_name}"
+
   tags = merge(local.common_tags, {
     Environment = local.env
     RegionCode  = local.region_code
@@ -75,8 +78,8 @@ dependency "route53-global" {
   config_path = "${dirname(find_in_parent_folders())}/environments/${local.env}/${local.region}/route53-global"
   mock_outputs = {
     route53_zone_zone_arn = {
-      "usw2-int.dev.pnjlavtech.com" = "arn:aws:route53:::hostedzone/ABCDEFG1234"
-      "usw2.dev.pnjlavtech.com"     = "arn:aws:route53:::hostedzone/HIJKLMN5678"
+      local.route53_zone_zone_arn_keyint = "arn:aws:route53:::hostedzone/ABCDEFG1234"
+      local.route53_zone_zone_arn_keypub = "arn:aws:route53:::hostedzone/HIJKLMN5678"
     }
   }
 
