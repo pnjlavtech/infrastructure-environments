@@ -78,8 +78,8 @@ dependency "route53-global" {
   config_path = "${dirname(find_in_parent_folders())}/environments/${local.env}/${local.region}/route53-global"
   mock_outputs = {
     route53_zone_zone_arn = {
-      local.route53_zone_zone_arn_keyint = "arn:aws:route53:::hostedzone/ABCDEFG1234"
-      local.route53_zone_zone_arn_keypub = "arn:aws:route53:::hostedzone/HIJKLMN5678"
+      (local.route53_zone_zone_arn_keyint) = "arn:aws:route53:::hostedzone/ABCDEFG1234"
+      (local.route53_zone_zone_arn_keypub) = "arn:aws:route53:::hostedzone/HIJKLMN5678"
     }
   }
 
